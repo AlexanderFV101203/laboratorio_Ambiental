@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iniciar sesión | Laboratorio Ambiental</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f6f8;
+            color: #263445;
+        }
+
+        .login-contenedor {
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            border: 1px solid #dce1e6;
+            border-radius: 5px;
+            padding: 35px;
+        }
+
+        .login-encabezado {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-encabezado h1 {
+            margin: 0;
+            font-size: 23px;
+            font-weight: 600;
+        }
+
+        .login-encabezado p {
+            margin-top: 9px;
+            color: #75808c;
+            font-size: 12px;
+        }
+
+        .separador {
+            border: 0;
+            border-top: 1px solid #e5e8ec;
+            margin: 25px 0;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        .campo label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #445363;
+            margin-bottom: 8px;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd3db;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .campo input:focus {
+            outline: 1px solid #34536f;
+        }
+
+        .boton-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #34536f;
+            color: #ffffff;
+            border: none;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .boton-login:hover {
+            background-color: #273f55;
+        }
+
+        .error {
+            background-color: #fff1f1;
+            border: 1px solid #e6bcbc;
+            color: #a12626;
+            padding: 12px;
+            border-radius: 3px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .login-pie {
+            text-align: center;
+            color: #75808c;
+            font-size: 11px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .login-contenedor {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="login-contenedor">
+
+        <div class="login-encabezado">
+
+            <h1>Laboratorio Ambiental</h1>
+
+            <p>TT Electronics | Gestor de solicitudes</p>
+
+        </div>
+
+        <hr class="separador">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <div class="error">
+                    Usuario o contraseña incorrectos.
+                    Inténtalo nuevamente.
+                </div>
+            {% endif %}
+
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+
+            <div class="campo">
+
+                <label for="id_username">
+                    Usuario
+                </label>
+
+                <input
+                    type="text"
+                    name="username"
+                    id="id_username"
+                    autocomplete="username"
+                    required
+                    autofocus
+                >
+
+            </div>
+
+            <div class="campo">
+
+                <label for="id_password">
+                    Contraseña
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="id_password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+            <button type="submit" class="boton-login">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <div class="login-pie">
+            Acceso exclusivo para personal autorizado
+        </div>
+
+    </main>
+
+</body>
+
+</html>

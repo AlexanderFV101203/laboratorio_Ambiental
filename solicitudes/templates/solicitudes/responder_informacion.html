@@ -1,0 +1,70 @@
+{% extends "solicitudes/base.html" %}
+
+{% block title %}
+Responder información | Laboratorio Ambiental
+{% endblock %}
+
+{% block content %}
+
+<h2>Responder información adicional</h2>
+
+<p>
+    <strong>Solicitud:</strong> #{{ solicitud.id }}
+</p>
+
+<p>
+    <strong>Estado:</strong>
+    {{ solicitud.get_estado_display }}
+</p>
+
+<section class="panel">
+
+    <h3>Información solicitada por el laboratorio</h3>
+
+    <p>
+        {{ solicitud.informacion_requerida|linebreaksbr }}
+    </p>
+
+</section>
+
+<section class="panel">
+
+    <h3>Tu respuesta</h3>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ formulario.non_field_errors }}
+
+        <div style="margin-bottom: 20px;">
+
+            <label for="{{ formulario.respuesta_informacion.id_for_label }}">
+                <strong>Información adicional:</strong>
+            </label>
+
+            <div style="margin-top: 10px;">
+                {{ formulario.respuesta_informacion }}
+            </div>
+
+            {{ formulario.respuesta_informacion.errors }}
+
+        </div>
+
+        <button type="submit" class="boton">
+            Enviar respuesta
+        </button>
+
+    </form>
+
+</section>
+
+<div style="margin-top: 20px;">
+
+    <a href="{% url 'detalle_solicitud' solicitud.id %}">
+        Volver a la solicitud
+    </a>
+
+</div>
+
+{% endblock %}

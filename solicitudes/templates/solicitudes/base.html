@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Laboratorio Ambiental{% endblock %}
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #263445;
+            background-color: #f5f6f8;
+        }
+
+        /* ENCABEZADO */
+
+        .encabezado {
+            background: #ffffff;
+            border-bottom: 1px solid #dce1e6;
+            padding: 18px 32px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .encabezado h1 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .encabezado p {
+            margin: 5px 0 0;
+            color: #75808c;
+            font-size: 12px;
+        }
+
+        .usuario-sesion {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: #5d6976;
+        }
+
+        .usuario-sesion form {
+            margin: 0;
+        }
+
+        .boton-cerrar-sesion {
+            background-color: #ffffff;
+            color: #34536f;
+            border: 1px solid #cbd3db;
+            border-radius: 3px;
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .boton-cerrar-sesion:hover {
+            background-color: #f1f3f5;
+        }
+
+        .contenido {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #dce1e6;
+            border-radius: 4px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 21px;
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        a {
+            color: #34536f;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #34536f;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .boton:hover {
+            background: #273f55;
+            text-decoration: none;
+        }
+
+        input,
+        textarea,
+        select {
+            max-width: 100%;
+            padding: 9px;
+            border: 1px solid #cbd3db;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: 1px solid #34536f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e8ec;
+        }
+
+        th {
+            background: #f3f5f7;
+            font-size: 12px;
+            color: #5d6976;
+        }
+
+        .formulario-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px 24px;
+            margin-top: 24px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .campo label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #445363;
+        }
+
+        .campo input,
+        .campo select,
+        .campo textarea {
+            width: 100%;
+        }
+
+        .campo-completo {
+            grid-column: 1 / -1;
+        }
+
+        .campo textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .error {
+            color: #a12626;
+            font-size: 12px;
+        }
+
+        .tabla-pruebas {
+            width: 100%;
+            border: 1px solid #cbd3db;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .tabla-pruebas label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            border-bottom: 1px solid #dce1e6;
+            background-color: #ffffff;
+        }
+
+        .tabla-pruebas input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .tabla-pruebas > div {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .tabla-pruebas > div > div {
+            min-width: 0;
+        }
+
+        .tabla-pruebas > div > div label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            margin: 0;
+            border-bottom: 1px solid #d8dee5;
+            cursor: pointer;
+        }
+
+        .tabla-pruebas > div > div:nth-child(4n+1) label,
+        .tabla-pruebas > div > div:nth-child(4n+2) label {
+            background-color: #ffffff;
+        }
+
+        .tabla-pruebas > div > div:nth-child(4n+3) label,
+        .tabla-pruebas > div > div:nth-child(4n+4) label {
+            background-color: #eef0f2;
+        }
+
+        .tabla-pruebas > div > div:nth-child(odd) {
+            border-right: 1px solid #d8dee5;
+        }
+
+        .panel table tbody tr:nth-child(even) {
+            background-color: #f1f3f5;
+        }
+
+        .panel table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .panel table td,
+        .panel table th {
+            border: 1px solid #dce1e6;
+        }
+        .panel table th {
+            width: 220px;
+        }
+
+        
+        @media (max-width: 650px) {
+            .formulario-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .encabezado {
+                padding: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .usuario-sesion {
+                flex-wrap: wrap;
+            }
+
+            .contenido {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .panel {
+                padding: 16px;
+                overflow-x: auto;
+            }
+
+            .tabla-pruebas > div {
+                grid-template-columns: 1fr;
+            }
+
+            .tabla-pruebas > div > div:nth-child(odd) {
+                border-right: none;
+            }
+
+            .tabla-pruebas > div > div:nth-child(even) label {
+                background-color: #eef0f2;
+            }
+
+            .tabla-pruebas > div > div:nth-child(odd) label {
+                background-color: #ffffff;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <header class="encabezado">
+
+        <div class="encabezado-titulo">
+
+            <h1>Laboratorio Ambiental</h1>
+
+            <p>
+                TT Electronics | Gestor de solicitudes
+            </p>
+
+        </div>
+
+        {% if user.is_authenticated %}
+
+            <div class="usuario-sesion">
+
+                <span>
+                    {{ user.get_full_name|default:user.username }}
+                </span>
+
+                <form method="post" action="{% url 'logout' %}">
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="boton-cerrar-sesion"
+                    >
+                        Cerrar sesión
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
+    </header>
+
+    <main class="contenido">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</body>
+
+</html>

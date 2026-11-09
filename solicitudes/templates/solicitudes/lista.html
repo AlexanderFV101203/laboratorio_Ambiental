@@ -1,0 +1,53 @@
+
+{% extends "solicitudes/base.html" %}
+
+{% block title %}Solicitudes | Laboratorio Ambiental{% endblock %}
+
+{% block content %}
+
+    <h2>Solicitudes de laboratorio</h2>
+
+    <p>
+        Consulta y seguimiento de las solicitudes registradas.
+    </p>
+
+    <a href="{% url 'crear_solicitud' %}" class="boton">
+        + Nueva solicitud
+    </a>
+
+    <section class="panel">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Modelo</th>
+                    <th>Originador</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for solicitud in solicitudes %}
+                <tr>
+                    <td><a href="{% url 'detalle_solicitud' solicitud.id %}">#{{ solicitud.id }}</a></td>
+                    <td>{{ solicitud.modelo }}</td>
+                    <td>{{ solicitud.originador }}</td>
+                    <td>{{ solicitud.get_estado_display }}</td>
+                    <td>{{ solicitud.fecha_creacion|date:"d/m/Y" }}</td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        No hay solicitudes registradas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+{% endblock %}

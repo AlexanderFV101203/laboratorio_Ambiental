@@ -1,0 +1,295 @@
+
+{% extends "solicitudes/base.html" %}
+
+{% block title %}
+Solicitud #{{ solicitud.id }} | Laboratorio Ambiental
+{% endblock %}
+
+{% block content %}
+
+<h2>Solicitud #{{ solicitud.id }}</h2>
+
+<p>
+    <strong>Estado:</strong>
+    {{ solicitud.get_estado_display }}
+</p>
+
+{% if solicitud.informacion_requerida %}
+
+<section class="panel">
+
+    <h3>Información adicional solicitada</h3>
+
+    <p>
+        <strong>Solicitud del laboratorio:</strong>
+    </p>
+
+    <p>
+        {{ solicitud.informacion_requerida|linebreaksbr }}
+    </p>
+
+    {% if solicitud.estado == "PENDIENTE" %}
+
+        {% if solicitud.solicitante_id == request.user.id %}
+
+            <div style="margin-top: 20px;">
+
+                <a
+                    href="{% url 'responder_informacion' solicitud.id %}"
+                    class="boton"
+                >
+                    Responder información
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+    {% if solicitud.respuesta_informacion %}
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+
+        <p>
+            <strong>Respuesta del solicitante:</strong>
+        </p>
+
+        <p>
+            {{ solicitud.respuesta_informacion|linebreaksbr }}
+        </p>
+
+    {% endif %}
+
+</section>
+
+{% endif %}
+
+<h3>Información general</h3>
+
+<table style="width: 100%; border-collapse: collapse;">
+
+    <tbody>
+
+        <tr style="background-color: #f1f3f5;">
+            <th style="padding: 10px; text-align: left; width: 35%;">
+                Orden de laboratorio
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.orden_laboratorio|default:"—" }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="padding: 10px; text-align: left;">
+                Modelo
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.modelo }}
+            </td>
+        </tr>
+
+        <tr style="background-color: #f1f3f5;">
+            <th style="padding: 10px; text-align: left;">
+                Resistencia
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.resistencia|default:"—" }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="padding: 10px; text-align: left;">
+                Tolerancia
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.tolerancia|default:"—" }}
+            </td>
+        </tr>
+
+        <tr style="background-color: #f1f3f5;">
+            <th style="padding: 10px; text-align: left;">
+                Orden de trabajo
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.orden_trabajo|default:"—" }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="padding: 10px; text-align: left;">
+                Código de fecha
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.codigo_fecha|default:"—" }}
+            </td>
+        </tr>
+
+        <tr style="background-color: #f1f3f5;">
+            <th style="padding: 10px; text-align: left;">
+                Lote
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.lote|default:"—" }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="padding: 10px; text-align: left;">
+                Cantidad de piezas
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.cantidad_piezas }}
+            </td>
+        </tr>
+
+        <tr style="background-color: #f1f3f5;">
+            <th style="padding: 10px; text-align: left;">
+                Originador
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.originador }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="padding: 10px; text-align: left;">
+                Fecha de solicitud
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}
+            </td>
+        </tr>
+
+        <tr style="background-color: #f1f3f5;">
+            <th style="padding: 10px; text-align: left;">
+                Última actualización
+            </th>
+            <td style="padding: 10px;">
+                {{ solicitud.fecha_actualizacion|date:"d/m/Y H:i" }}
+            </td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+<h3 style="margin-top: 30px;">
+    Pruebas solicitadas
+</h3>
+
+<table style="width: 100%; border-collapse: collapse;">
+
+    <tbody>
+
+        {% for prueba in solicitud.pruebas.all %}
+
+            <tr {% if forloop.even %}
+                style="background-color: #f1f3f5;"
+                {% endif %}>
+
+                <td style="padding: 10px;">
+                    {{ prueba.nombre }}
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+                <td style="padding: 10px;">
+                    Sin pruebas registradas.
+                </td>
+            </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<h3 style="margin-top: 30px;">
+    Comentarios del solicitante
+</h3>
+
+<div style="
+    padding: 15px;
+    background-color: #f1f3f5;
+    border: 1px solid #ddd;
+">
+
+    {{ solicitud.comentarios|default:"Sin comentarios."|linebreaksbr }}
+
+</div>
+
+{% if perms.solicitudes.change_solicitud %}
+
+    {% if request.user.is_superuser or es_laboratorio %}
+
+        <div style="margin-top: 30px;">
+
+            <!-- INICIAR REVISIÓN -->
+
+            {% if solicitud.estado == "RECIBIDA" %}
+
+                <form
+                    method="post"
+                    action="{% url 'iniciar_revision' solicitud.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="boton">
+                        Iniciar revisión
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+
+            <!-- ACEPTAR SOLICITUD -->
+
+            {% if solicitud.estado == "EN_REVISION" %}
+
+                <form
+                    method="post"
+                    action="{% url 'aceptar_solicitud' solicitud.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="boton">
+                        Aceptar solicitud
+                    </button>
+
+                </form>
+
+
+                <!-- SOLICITAR INFORMACIÓN -->
+
+                <div style="margin-top: 15px;">
+
+                    <a href="{% url 'solicitar_informacion' solicitud.id %}">
+                        Solicitar información adicional
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+{% endif %}
+
+<div style="margin-top: 30px;">
+
+    <a href="{% url 'lista_solicitudes' %}">
+        Volver al listado
+    </a>
+
+</div>
+
+{% endblock %}

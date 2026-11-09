@@ -1,0 +1,70 @@
+{% extends "solicitudes/base.html" %}
+
+{% block title %}
+Solicitar información | Laboratorio Ambiental
+{% endblock %}
+
+{% block content %}
+
+<h2>Solicitar información</h2>
+
+<p>
+    Solicitud #{{ solicitud.id }} -
+    Modelo {{ solicitud.modelo }}
+</p>
+
+<section class="panel">
+
+    <h3>Información requerida</h3>
+
+    <p>
+        Describe qué datos debe aclarar o proporcionar
+        el solicitante para continuar con la revisión.
+    </p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {% if formulario.non_field_errors %}
+            <div class="error">
+                {{ formulario.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="campo">
+
+            <label for="{{ formulario.motivo.id_for_label }}">
+                {{ formulario.motivo.label }} *
+            </label>
+
+            {{ formulario.motivo }}
+
+            {% if formulario.motivo.errors %}
+                <div class="error">
+                    {{ formulario.motivo.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div style="margin-top: 24px;">
+
+            <button type="submit" class="boton">
+                Confirmar solicitud de información
+            </button>
+
+            <a
+                href="{% url 'detalle_solicitud' solicitud.id %}"
+                style="margin-left: 16px;"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

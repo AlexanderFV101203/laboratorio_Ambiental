@@ -1,0 +1,87 @@
+
+{% extends "solicitudes/base.html" %}
+
+{% block title %}Nueva solicitud | Laboratorio Ambiental{% endblock %}
+
+{% block content %}
+
+<h2>Nueva solicitud</h2>
+
+<p>
+    Registra la información de las piezas
+    que requieren pruebas de laboratorio.
+</p>
+
+<section class="panel">
+
+    <h3>Información de la solicitud</h3>
+
+    <p>
+        <strong>Solicitante:</strong>
+        {{ request.user.get_full_name }}
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if formulario.non_field_errors %}
+            <div class="error">
+                {{ formulario.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="formulario-grid">
+
+            {% for campo in formulario %}
+
+                <div class="campo {% if campo.name == 'comentarios' or campo.name == 'pruebas' %}campo-completo{% endif %}">
+
+                    <label for="{{ campo.id_for_label }}">
+                        {{ campo.label }}
+                        {% if campo.field.required %}*{% endif %}
+                    </label>
+
+                    {% if campo.name == 'pruebas' %}
+
+                        <div class="tabla-pruebas">
+                            {{ campo }}
+                        </div>
+
+                    {% else %}
+
+                            {{ campo }}
+
+                    {% endif %}
+
+                    {% if campo.errors %}
+                         <div class="error">
+                            {{ campo.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                {% endfor %}
+
+        </div>
+
+        <div style="margin-top: 28px;">
+
+            <button type="submit" class="boton">
+                Guardar solicitud
+            </button>
+
+            <a
+                href="{% url 'lista_solicitudes' %}"
+                style="margin-left: 16px;"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}
